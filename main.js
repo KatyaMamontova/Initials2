@@ -28,33 +28,33 @@ function main() {
         scene.add(light);
     }
 
-    {
-        const loader = new THREE.TextureLoader();
-        const texture = loader.load(
-            // 'https://community.theta360.guide/uploads/default/original/2X/8/87a28fdbb7d4850d72472f34e116ce43127042cf.jpeg',
-            // 'https://threejsfundamentals.org/threejs/resources/images/equirectangularmaps/tears_of_steel_bridge_2k.jpg',
-            // 'https://d2kiovrlj2atne.cloudfront.net/panos/24853/pano.tiles/thumb900x450.jpg',
-            // 'https://img.immoviewer.com/items/jll/5aa170eec9e77c005082b1d7/Tour/B1611_C631_P766_30_08_2017_edit_felix5907.jpg',
-            // 'https://live.staticflickr.com/2127/2043866600_edddae7146_h.jpg',
-            'https://upload.wikimedia.org/wikipedia/commons/a/af/Cologne_at_Night_–_360°_panorama_from_high_up_–_July_2021.jpg',
-
-
-            () => {
-                const rt = new THREE.WebGLCubeRenderTarget(texture.image.height);
-                rt.fromEquirectangularTexture(renderer, texture);
-                scene.background = rt.texture;
-            });
-    }
+    /*  {
+         const loader = new THREE.TextureLoader();
+         const texture = loader.load(
+             // 'https://community.theta360.guide/uploads/default/original/2X/8/87a28fdbb7d4850d72472f34e116ce43127042cf.jpeg',
+             // 'https://threejsfundamentals.org/threejs/resources/images/equirectangularmaps/tears_of_steel_bridge_2k.jpg',
+             // 'https://d2kiovrlj2atne.cloudfront.net/panos/24853/pano.tiles/thumb900x450.jpg',
+             // 'https://img.immoviewer.com/items/jll/5aa170eec9e77c005082b1d7/Tour/B1611_C631_P766_30_08_2017_edit_felix5907.jpg',
+             // 'https://live.staticflickr.com/2127/2043866600_edddae7146_h.jpg',
+             'https://upload.wikimedia.org/wikipedia/commons/a/af/Cologne_at_Night_–_360°_panorama_from_high_up_–_July_2021.jpg',
+ 
+ 
+             () => {
+                 const rt = new THREE.WebGLCubeRenderTarget(texture.image.height);
+                 rt.fromEquirectangularTexture(renderer, texture);
+                 scene.background = rt.texture;
+             });
+     } */
 
     const controls = new THREE.OrbitControls(camera, canvas);
     controls.target.set(0, 0, 0);
     controls.update();
 
+
     //Г
 
     const material1 = new THREE.MeshToonMaterial({
         color: '#cc4',
-        shininess: 100,
         emissive: '#555555'
     });
 
@@ -81,24 +81,21 @@ function main() {
 
     //Л
 
-    const material2 = new THREE.MeshStandardMaterial({
-        color: '#faf',
-        roughness: 0.4,
-        metalness: 0.6
+    const material2 = new THREE.MeshPhongMaterial({
+        color: '#faf'
     });
 
     const radiusTop = 0.2;
     const radiusBottom = 0.2;
     const heightC = height - 0.05;
     const radialSegments = 100;
-    const longCylinderGeometry = new THREE.CylinderGeometry(
+    const cylinderGeometry = new THREE.CylinderGeometry(
         radiusTop, radiusBottom, heightC, radialSegments);
-    const cylinder1 = new THREE.Mesh(longCylinderGeometry, material2);
+    const cylinder1 = new THREE.Mesh(cylinderGeometry, material2);
     cylinder1.position.x = -0.6;
     cylinder1.rotateZ(-Math.PI / 9);
 
-    const shortCylinderGeometry = new THREE.CylinderGeometry(radiusTop, radiusBottom, heightC, radialSegments);
-    const cylinder2 = new THREE.Mesh(shortCylinderGeometry, material2);
+    const cylinder2 = new THREE.Mesh(cylinderGeometry, material2);
     cylinder2.position.x = cylinder1.position.x + 0.5;
     cylinder2.rotateZ(Math.PI / 9);
 
@@ -117,6 +114,63 @@ function main() {
     scene.add(groupL);
     groupL.position.y = -0.05;
 
+
+    //Ф
+
+    const material3 = new THREE.MeshStandardMaterial({
+        color: '#aff',
+        roughness: 0.4,
+        metalness: 0.6,
+        side: THREE.DoubleSide
+    });
+
+    const widthLP = 0.3;
+    const heightLP = height;
+    const longPlaneGeometry = new THREE.PlaneGeometry(widthLP, heightLP);
+
+    const widthSP = 0.3;
+    const heightSP = heightLP / 2;
+    const shortPlaneGeometry = new THREE.PlaneGeometry(widthSP, heightSP);
+
+    const plane1 = new THREE.Mesh(longPlaneGeometry, material3);
+    plane1.position.x = 1.5;
+
+    const plane2 = new THREE.Mesh(longPlaneGeometry, material3);
+    plane2.position.x = plane1.position.x;
+    plane2.position.y = heightLP / 2;
+    plane2.rotateZ(Math.PI / 2);
+
+    const plane3 = new THREE.Mesh(longPlaneGeometry, material3);
+    plane3.position.x = plane1.position.x;
+    plane3.rotateZ(Math.PI / 2);
+
+    const plane4 = new THREE.Mesh(shortPlaneGeometry, material3);
+    plane4.position.x = plane1.position.x - heightLP / 2;
+    plane4.position.y = heightLP / 4;
+
+    const plane5 = new THREE.Mesh(shortPlaneGeometry, material3);
+    plane5.position.x = plane1.position.x + heightLP / 2;
+    plane5.position.y = heightLP / 4;
+
+    const groupF = new THREE.Group();
+    groupF.add(plane1);
+    groupF.add(plane2);
+    groupF.add(plane3);
+    groupF.add(plane4);
+    groupF.add(plane5);
+    scene.add(groupF);
+
+    //поворот
+
+    let needRotate = 0;
+    const step = Math.PI / 100;
+    let angle = 0;
+
+    document.addEventListener('keyup', (event) => {
+        needRotate = (event.code == 'Digit1') ?
+            1 : (event.code == 'Digit2') ?
+                2 : (event.code == 'Digit3') ? 3 : 0;
+    });
 
     function resizeRendererToDisplaySize(renderer) {
         const canvas = renderer.domElement;
@@ -137,6 +191,23 @@ function main() {
             const canvas = renderer.domElement;
             camera.aspect = canvas.clientWidth / canvas.clientHeight;
             camera.updateProjectionMatrix();
+        }
+
+        if (needRotate) {
+            if (angle < 2 * Math.PI) {
+                angle += step;
+                // console.log(angle);
+                if (needRotate == 1) {
+                    groupG.rotation.y += step;
+                } else if (needRotate == 2) {
+                    groupL.rotation.y += step;
+                } else if (needRotate == 3) {
+                    groupF.rotateOnAxis(new THREE.Vector3(0, 1, 0), step);
+                }
+            } else {
+                angle = 0;
+                needRotate = 0;
+            }
         }
 
         renderer.render(scene, camera);
