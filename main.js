@@ -22,29 +22,21 @@ function main() {
         const lightZ = 2;
         light.position.set(lightX, lightY, lightZ);
 
-        // light.castShadow = true;
-        // light.shadow.mapSize.width = 1000;
-        // light.shadow.mapSize.height = 1000;
         scene.add(light);
     }
 
-    /*  {
-         const loader = new THREE.TextureLoader();
-         const texture = loader.load(
-             // 'https://community.theta360.guide/uploads/default/original/2X/8/87a28fdbb7d4850d72472f34e116ce43127042cf.jpeg',
-             // 'https://threejsfundamentals.org/threejs/resources/images/equirectangularmaps/tears_of_steel_bridge_2k.jpg',
-             // 'https://d2kiovrlj2atne.cloudfront.net/panos/24853/pano.tiles/thumb900x450.jpg',
-             // 'https://img.immoviewer.com/items/jll/5aa170eec9e77c005082b1d7/Tour/B1611_C631_P766_30_08_2017_edit_felix5907.jpg',
-             // 'https://live.staticflickr.com/2127/2043866600_edddae7146_h.jpg',
-             'https://upload.wikimedia.org/wikipedia/commons/a/af/Cologne_at_Night_–_360°_panorama_from_high_up_–_July_2021.jpg',
- 
- 
-             () => {
-                 const rt = new THREE.WebGLCubeRenderTarget(texture.image.height);
-                 rt.fromEquirectangularTexture(renderer, texture);
-                 scene.background = rt.texture;
-             });
-     } */
+    {
+        const loader = new THREE.TextureLoader();
+        const texture = loader.load(
+
+            'https://upload.wikimedia.org/wikipedia/commons/a/af/Cologne_at_Night_–_360°_panorama_from_high_up_–_July_2021.jpg',
+
+            () => {
+                const rt = new THREE.WebGLCubeRenderTarget(texture.image.height);
+                rt.fromEquirectangularTexture(renderer, texture);
+                scene.background = rt.texture;
+            });
+    }
 
     const controls = new THREE.OrbitControls(camera, canvas);
     controls.target.set(0, 0, 0);
@@ -162,15 +154,24 @@ function main() {
 
     //поворот
 
-    let needRotate = 0;
-    const step = Math.PI / 100;
-    let angle = 0;
+    let needRotateG = false;
+    let needRotateL = false;
+    let needRotateF = false;
 
-    document.addEventListener('keyup', (event) => {
-        needRotate = (event.code == 'Digit1') ?
-            1 : (event.code == 'Digit2') ?
-                2 : (event.code == 'Digit3') ? 3 : 0;
+    document.addEventListener('keyup', event => {
+        (event.code == 'Digit1') ? needRotateG = true :
+            (event.code == 'Digit2') ? needRotateL = true :
+                (event.code == 'Digit3') ? needRotateF = true : () => {
+                    needRotateG = false;
+                    needRotateL = false;
+                    needRotateF = false;
+                };
     });
+
+    const step = Math.PI / 100;
+    let angleG = 0;
+    let angleL = 0;
+    let angleF = 0;
 
     function resizeRendererToDisplaySize(renderer) {
         const canvas = renderer.domElement;
@@ -193,22 +194,35 @@ function main() {
             camera.updateProjectionMatrix();
         }
 
-        if (needRotate) {
-            if (angle < 2 * Math.PI) {
-                angle += step;
-                // console.log(angle);
-                if (needRotate == 1) {
-                    groupG.rotation.y += step;
-                } else if (needRotate == 2) {
-                    groupL.rotation.y += step;
-                } else if (needRotate == 3) {
-                    groupF.rotateOnAxis(new THREE.Vector3(0, 1, 0), step);
-                }
+        if (needRotateG) {
+            if (angleG < 2 * Math.PI) {
+              angleG += step;
+              groupG.rotation.x = angleG;
             } else {
-                angle = 0;
-                needRotate = 0;
+              angleG = 0;
+              needRotateG = false;
             }
-        }
+          }
+      
+          if (needRotateL) {
+            if (angleL < 2 * Math.PI) {
+              angleL += step;
+              groupL.rotation.x = angleL;
+            } else {
+              angleL = 0;
+              needRotateL = false;
+            }
+          }
+      
+          if (needRotateF) {
+            if (angleF < 2 * Math.PI) {
+              angleF += step;
+              groupF.rotation.x = angleF;
+            } else {
+              angleF = 0;
+              needRotateF = false;
+            }
+          }
 
         renderer.render(scene, camera);
 
