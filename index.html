@@ -1,15 +1,81 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<meta charset="utf-8">
-		<title>three.js Primitives</title>
-  		<link rel="stylesheet" href="main.css">
-	</head>
-	<body>
-		<canvas class="screen"></canvas>
 
-		<script src="three.js"></script>
-		<script src="OrbitControls.js"></script>
-		<script src="main.js"></script>
-	</body>
+<head>
+	<meta charset="utf-8">
+	<title>three.js Primitives</title>
+	<link rel="stylesheet" href="main.css">
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Manrope&display=swap" rel="stylesheet">
+	<script src="three.js"></script>
+	<script src="OrbitControls.js"></script>
+	<script id="fsBox" type="x-shader/x-fragment">
+
+			uniform float time;
+	
+			varying vec2 vUv;
+	
+			void main( void ) {
+	
+				vec2 position = - 1.0 + 2.0 * vUv;
+				 
+				float red = abs( sin(position.y + time) + cos(position.x + time)) ;
+				float t = abs(2.0 * sin(2.0*(position.x + time)));
+	
+				gl_FragColor = vec4( red, 0.05, 0.05, t );
+	
+			}
+	
+	</script>
+
+	<script id="vs" type="x-shader/x-vertex">
+
+			varying vec2 vUv;
+	
+			void main()
+			{
+				vUv = uv;
+				vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 );
+				gl_Position = projectionMatrix * mvPosition;
+			}
+	
+		</script>
+</head>
+
+<body>
+	<canvas class="screen"></canvas>
+	<div class="options">
+		<div id="selectedObjOutput"></div>
+
+		<dl>
+			<dt>
+				<input type="radio" id="colorMaterial" name="material" value="color" checked>
+				<label for="colorMaterial">сплошной цвет</label>
+			<dt>
+				<input type="color" id="colorInput" value="#1133cc">
+			</dt>
+			</dt>
+			<dt>
+				<input type="radio" id="mirrorMaterial" name="material" value="mirror">
+				<label for="mirrorMaterial">зеркало</label>
+			</dt>
+			<dt>
+				<input type="radio" id="pictureMaterial" name="material" value="picture">
+				<label for="pictureMaterial">картинка</label>
+			</dt>
+			<dt>
+				<input type="radio" id="transparentMaterial" name="material" value="transparency">
+				<label for="transparentMaterial">полупрозрачность</label>
+			</dt>
+			<dt>
+				<input type="radio" id="shaderMaterial" name="material" value="shader">
+				<label for="shaderMaterial">шейдерный материал</label>
+			</dt>
+		</dl>
+	</div>
+
+	<script src="main.js"></script>
+</body>
+
 </html>

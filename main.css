@@ -1,6 +1,7 @@
 html, body {
   margin: 0;
   height: 100%;
+  font-family: 'Manrope', sans-serif;
 }
 .screen {
   width: 100%;
@@ -9,11 +10,13 @@ html, body {
 }
 
 .options {
-  background-color: rgb(249, 240, 255);
   position: absolute;
   top: 20px;
   left: 20px;
   padding: 7px;
+  border: 1px rgb(255, 255, 255) solid;
+  color: aliceblue;
+  box-shadow: 0px 0px 10px 0px rgb(255, 181, 113);
 }
 
 .option {
