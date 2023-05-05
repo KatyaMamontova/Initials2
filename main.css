@@ -2,6 +2,7 @@ html, body {
   margin: 0;
   height: 100%;
   font-family: 'Manrope', sans-serif;
+  font-size: 12pt;
 }
 .screen {
   width: 100%;
@@ -13,12 +14,42 @@ html, body {
   position: absolute;
   top: 20px;
   left: 20px;
-  padding: 7px;
+  padding: 11px 25px 11px 15px;
   border: 1px rgb(255, 255, 255) solid;
   color: aliceblue;
   box-shadow: 0px 0px 10px 0px rgb(255, 181, 113);
+  text-shadow: rgb(255, 181, 113) 1px 0 2px;
 }
 
 .option {
   margin: 17px;
+}
+
+.radio {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+
+  border-radius: 50%;
+  width: 12px;
+  height: 12px;
+
+  border: 2px solid aliceblue;
+  transition: 0.2s all linear;
+  outline: none;
+
+  position: relative;
+  top: 4px;
+  box-shadow: 0px 0px 2px 0px rgb(255, 181, 113);
+}
+
+#colorInput {
+  width: 100px;
+  height: 20px;
+  margin: 4px;
+  margin-left: 20px;
+}
+
+input:checked {
+  border: 6px solid aliceblue;
 }
